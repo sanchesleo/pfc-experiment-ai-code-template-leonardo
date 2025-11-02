@@ -1,378 +1,184 @@
-console.log("Início Tarefa 2 - ['SEM IA']");
-class LegacyOrderProcessor {
-  processOrder(orderData, userInfo, paymentInfo, shippingInfo, promoInfo) {
-    var total = 0;
-    var subtotal = 0;
-    var tax = 0;
-    var shipping = 0;
-    var discount = 0;
-    var finalTotal = 0;
-    var temp1 = 0;
-    var temp2 = 0;
-    var temp3 = 0;
-    var unusedVar1 = "não usado";
-    var unusedVar2 = 123;
-    var unusedVar3 = true;
+/**
+ * @file refactor-code.js
+ * @description Refatoração da classe LegacyOrderProcessor com código limpo e modular.
+ */
 
-    if (orderData != null) {
-      if (orderData.items != null) {
-        if (orderData.items.length > 0) {
-          for (var i = 0; i < orderData.items.length; i++) {
-            var item = orderData.items[i];
-            if (item != null) {
-              if (item.price != null) {
-                if (item.quantity != null) {
-                  if (item.price > 0) {
-                    if (item.quantity > 0) {
-                      subtotal = subtotal + (item.price * item.quantity);
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+// ====================== 🔹 CONSTANTES ======================
+const USER_DISCOUNTS = {
+  VIP: 0.15,
+  GOLD: 0.1,
+  SILVER: 0.05,
+  BRONZE: 0.02,
+  REGULAR: 0,
+  PREMIUM: 0.2,
+  STANDARD: 0.1,
+  BASIC: 0.05,
+};
 
-    if (userInfo != null) {
-      if (userInfo.type != null) {
-        if (userInfo.type == "VIP") {
-          discount = subtotal * 0.15;
-        } else if (userInfo.type == "GOLD") {
-          discount = subtotal * 0.10;
-        } else if (userInfo.type == "SILVER") {
-          discount = subtotal * 0.05;
-        } else if (userInfo.type == "BRONZE") {
-          discount = subtotal * 0.02;
-        } else if (userInfo.type == "REGULAR") {
-          discount = 0;
-        } else {
-          discount = 0;
-        }
-      }
-    }
+const PROMO_CODES = {
+  SAVE10: 0.1,
+  SAVE20: 0.2,
+  SAVE30: 0.3,
+  SAVE50: 0.5,
+  BOGO: 0.5,
+  FREESHIP: "FREESHIP",
+};
 
-    if (promoInfo != null) {
-      if (promoInfo.code != null) {
-        if (promoInfo.code == "SAVE10") {
-          discount = discount + (subtotal * 0.1);
-        } else if (promoInfo.code == "SAVE20") {
-          discount = discount + (subtotal * 0.2);
-        } else if (promoInfo.code == "SAVE30") {
-          discount = discount + (subtotal * 0.3);
-        } else if (promoInfo.code == "SAVE50") {
-          discount = discount + (subtotal * 0.5);
-        } else if (promoInfo.code == "FREESHIP") {
-          shipping = 0;
-        } else if (promoInfo.code == "BOGO") {
-          discount = discount + (subtotal * 0.5);
-        }
-      }
-    }
+const SHIPPING_COSTS = {
+  EXPRESS: 25,
+  STANDARD: 15,
+  ECONOMY: 8,
+  PICKUP: 0,
+  FAST: 30,
+  MEDIUM: 15,
+  SLOW: 5,
+};
 
-    if (shippingInfo != null) {
-      if (shippingInfo.type != null) {
-        if (shippingInfo.type == "EXPRESS") {
-          shipping = 25;
-        } else if (shippingInfo.type == "STANDARD") {
-          shipping = 15;
-        } else if (shippingInfo.type == "ECONOMY") {
-          shipping = 8;
-        } else if (shippingInfo.type == "PICKUP") {
-          shipping = 0;
-        }
-      }
-    }
+const TAX_RATES = {
+  CA: 0.0875,
+  NY: 0.08,
+  TX: 0.0625,
+  FL: 0,
+  EUROPE: 0.2,
+  USA: 0.1,
+  ASIA: 0.15,
+  DEFAULT: 0.05,
+};
 
-    if (userInfo != null) {
-      if (userInfo.state != null) {
-        if (userInfo.state == "CA") {
-          tax = (subtotal - discount) * 0.0875;
-        } else if (userInfo.state == "NY") {
-          tax = (subtotal - discount) * 0.08;
-        } else if (userInfo.state == "TX") {
-          tax = (subtotal - discount) * 0.0625;
-        } else if (userInfo.state == "FL") {
-          tax = 0;
-        } else {
-          tax = (subtotal - discount) * 0.05;
-        }
-      }
-    }
+const PAYMENT_FEES = {
+  CREDIT_CARD: 0.029,
+  DEBIT_CARD: 0.015,
+  PAYPAL: 0.034,
+  BANK_TRANSFER: 0,
+  CRYPTO: 0.01,
+  CARD: 0.03,
+  BANK: 0,
+  DIGITAL: 0.02,
+};
 
-    var paymentFee = 0;
-    if (paymentInfo != null) {
-      if (paymentInfo.method != null) {
-        if (paymentInfo.method == "CREDIT_CARD") {
-          paymentFee = (subtotal - discount) * 0.029;
-        } else if (paymentInfo.method == "DEBIT_CARD") {
-          paymentFee = (subtotal - discount) * 0.015;
-        } else if (paymentInfo.method == "PAYPAL") {
-          paymentFee = (subtotal - discount) * 0.034;
-        } else if (paymentInfo.method == "BANK_TRANSFER") {
-          paymentFee = 0;
-        } else if (paymentInfo.method == "CRYPTO") {
-          paymentFee = (subtotal - discount) * 0.01;
-        }
-      }
-    }
+// ====================== 🔹 FUNÇÕES AUXILIARES ======================
 
-    if (false) {
-      console.log("Este código nunca executa");
-      var deadCode = 100;
-      deadCode = deadCode * 2;
-      deadCode = deadCode + 50;
-    }
-
-    while (false) {
-      console.log("Loop infinito que nunca executa");
-      var infiniteLoop = 0;
-      infiniteLoop = infiniteLoop + 1;
-    }
-
-    if (true || false) {
-      var alwaysTrue = 1;
-      var anotherVar = 2;
-      anotherVar = anotherVar * 3;
-      anotherVar = anotherVar + 5;
-    }
-
-    finalTotal = subtotal - discount + tax + shipping + paymentFee;
-
-    if (finalTotal < 0) {
-      finalTotal = 0;
-    }
-
-    finalTotal = Math.round(finalTotal * 100) / 100;
-
-    var unused1 = finalTotal;
-    var unused2 = finalTotal * 2;
-    var unused3 = finalTotal / 2;
-
-    return finalTotal;
+function validateItems(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error("Pedido inválido: deve conter pelo menos um item.");
   }
-
-  calculateOrderTotal(order, customer, payment, delivery, coupon) {
-    var sum = 0;
-    var baseAmount = 0;
-    var userDiscount = 0;
-    var couponDiscount = 0;
-    var deliveryCost = 0;
-    var taxAmount = 0;
-    var paymentCost = 0;
-    var total = 0;
-    var x = 0;
-    var y = 0;
-    var z = 0;
-
-    if (order) {
-      if (order.products) {
-        for (var j = 0; j < order.products.length; j++) {
-          var product = order.products[j];
-          if (product) {
-            if (product.cost) {
-              if (product.count) {
-                sum = sum + product.cost * product.count;
-              }
-            }
-          }
-        }
-      }
+  for (const item of items) {
+    if (!item || item.price <= 0 || item.quantity <= 0) {
+      throw new Error("Item inválido: preço e quantidade devem ser positivos.");
     }
-
-    baseAmount = sum;
-
-    if (customer) {
-      if (customer.level) {
-        if (customer.level == "PREMIUM") {
-          userDiscount = baseAmount * 0.2;
-        } else if (customer.level == "STANDARD") {
-          userDiscount = baseAmount * 0.1;
-        } else if (customer.level == "BASIC") {
-          userDiscount = baseAmount * 0.05;
-        }
-      }
-    }
-
-    if (coupon) {
-      if (coupon.discount) {
-        couponDiscount = baseAmount * coupon.discount;
-      }
-    }
-
-    if (delivery) {
-      if (delivery.speed) {
-        if (delivery.speed == "FAST") {
-          deliveryCost = 30;
-        } else if (delivery.speed == "MEDIUM") {
-          deliveryCost = 15;
-        } else if (delivery.speed == "SLOW") {
-          deliveryCost = 5;
-        }
-      }
-    }
-
-    if (customer) {
-      if (customer.location) {
-        if (customer.location == "EUROPE") {
-          taxAmount = (baseAmount - userDiscount - couponDiscount) * 0.2;
-        } else if (customer.location == "USA") {
-          taxAmount = (baseAmount - userDiscount - couponDiscount) * 0.1;
-        } else if (customer.location == "ASIA") {
-          taxAmount = (baseAmount - userDiscount - couponDiscount) * 0.15;
-        }
-      }
-    }
-
-    if (payment) {
-      if (payment.type) {
-        if (payment.type == "CARD") {
-          paymentCost = (baseAmount - userDiscount - couponDiscount) * 0.03;
-        } else if (payment.type == "BANK") {
-          paymentCost = 0;
-        } else if (payment.type == "DIGITAL") {
-          paymentCost = (baseAmount - userDiscount - couponDiscount) * 0.02;
-        }
-      }
-    }
-
-    total = baseAmount - userDiscount - couponDiscount + taxAmount + deliveryCost + paymentCost;
-
-    if (total < 0) {
-      total = 0;
-    }
-
-    total = Math.round(total * 100) / 100;
-
-    return total;
-  }
-
-  validateAndProcessOrder(order, user, payment, shipping, promo, inventory, warehouse, logistics, notifications, analytics, audit, compliance) {
-    var isValid = true;
-    var errors = [];
-    var warnings = [];
-    var result = {};
-    var temp = 0;
-    var unused = "não usado";
-
-    if (order) {
-      if (order.items) {
-        if (order.items.length > 0) {
-          for (var i = 0; i < order.items.length; i++) {
-            var item = order.items[i];
-            if (item) {
-              if (item.id) {
-                if (item.quantity) {
-                  if (item.price) {
-                    if (item.quantity > 0) {
-                      if (item.price > 0) {
-                        if (inventory) {
-                          if (inventory.checkStock) {
-                            if (inventory.checkStock(item.id, item.quantity)) {
-                            } else {
-                              errors.push("Item " + item.id + " não disponível");
-                              isValid = false;
-                            }
-                          }
-                        }
-                      } else {
-                        errors.push("Preço inválido para item " + item.id);
-                        isValid = false;
-                      }
-                    } else {
-                      errors.push("Quantidade inválida para item " + item.id);
-                      isValid = false;
-                    }
-                  } else {
-                    errors.push("Preço não informado para item " + item.id);
-                    isValid = false;
-                  }
-                } else {
-                  errors.push("Quantidade não informada para item " + item.id);
-                  isValid = false;
-                }
-              } else {
-                errors.push("ID do item não informado");
-                isValid = false;
-              }
-            } else {
-              errors.push("Item inválido");
-              isValid = false;
-            }
-          }
-        } else {
-          errors.push("Pedido sem itens");
-          isValid = false;
-        }
-      } else {
-        errors.push("Itens do pedido não informados");
-        isValid = false;
-      }
-    } else {
-      errors.push("Pedido não informado");
-      isValid = false;
-    }
-
-    if (user) {
-      if (user.id) {
-        if (user.email) {
-          if (user.address) {
-          } else {
-            errors.push("Endereço do usuário não informado");
-            isValid = false;
-          }
-        } else {
-          errors.push("Email do usuário não informado");
-          isValid = false;
-        }
-      } else {
-        errors.push("ID do usuário não informado");
-        isValid = false;
-      }
-    } else {
-      errors.push("Usuário não informado");
-      isValid = false;
-    }
-
-    if (payment) {
-      if (payment.method) {
-        if (payment.amount) {
-          if (payment.amount > 0) {
-          } else {
-            errors.push("Valor do pagamento inválido");
-            isValid = false;
-          }
-        } else {
-          errors.push("Valor do pagamento não informado");
-          isValid = false;
-        }
-      } else {
-        errors.push("Método de pagamento não informado");
-        isValid = false;
-      }
-    } else {
-      errors.push("Informações de pagamento não fornecidas");
-      isValid = false;
-    }
-
-    if (false) {
-      console.log("Código morto");
-      var dead = 100;
-      dead = dead + 50;
-    }
-
-    if (true || false) {
-      var always = 1;
-      always = always * 2;
-    }
-
-    result.isValid = isValid;
-    result.errors = errors;
-    result.warnings = warnings;
-
-    return result;
   }
 }
 
-module.exports = { LegacyOrderProcessor };
+function calcSubtotal(items) {
+  return items.reduce((acc, i) => acc + i.price * i.quantity, 0);
+}
+
+function calcUserDiscount(subtotal, userType) {
+  return subtotal * (USER_DISCOUNTS[userType] || 0);
+}
+
+function calcPromoDiscount(subtotal, promoCode) {
+  const promo = PROMO_CODES[promoCode];
+  if (!promo) return 0;
+  if (promo === "FREESHIP") return "FREESHIP";
+  return subtotal * promo;
+}
+
+function calcShippingCost(type, hasFree) {
+  if (hasFree) return 0;
+  return SHIPPING_COSTS[type] ?? SHIPPING_COSTS.STANDARD;
+}
+
+function calcTax(subtotal, discount, state) {
+  const rate = TAX_RATES[state] ?? TAX_RATES.DEFAULT;
+  return (subtotal - discount) * rate;
+}
+
+function calcPaymentFee(subtotal, discount, method) {
+  const fee = PAYMENT_FEES[method] ?? 0;
+  return (subtotal - discount) * fee;
+}
+
+// ====================== 🔹 CLASSE PRINCIPAL ======================
+class OrderProcessor {
+  /**
+   * Processa um pedido completo aplicando regras de negócio.
+   */
+  static processOrder(orderData, userInfo, paymentInfo, shippingInfo, promoInfo) {
+    validateItems(orderData.items);
+
+    const subtotal = calcSubtotal(orderData.items);
+    const userDiscount = calcUserDiscount(subtotal, userInfo?.type);
+    const promoResult = calcPromoDiscount(subtotal, promoInfo?.code);
+    const hasFreeShipping = promoResult === "FREESHIP";
+    const promoDiscount = typeof promoResult === "number" ? promoResult : 0;
+
+    const totalDiscount = userDiscount + promoDiscount;
+    const shippingCost = calcShippingCost(shippingInfo?.type, hasFreeShipping);
+    const tax = calcTax(subtotal, totalDiscount, userInfo?.state);
+    const paymentFee = calcPaymentFee(subtotal, totalDiscount, paymentInfo?.method);
+
+    let total = subtotal - totalDiscount + tax + shippingCost + paymentFee;
+    if (total < 0) total = 0;
+
+    return Math.floor(total * 100) / 100;
+  }
+
+  /**
+   * Calcula total com base em produtos e descontos genéricos.
+   */
+  static calculateOrderTotal(order, customer, payment, delivery, coupon) {
+    validateItems(order.products);
+
+    const subtotal = calcSubtotal(order.products.map(p => ({ price: p.cost, quantity: p.count })));
+    const userDiscount = calcUserDiscount(subtotal, customer?.level);
+    const couponDiscount = subtotal * (coupon?.discount || 0);
+    const totalDiscount = userDiscount + couponDiscount;
+
+    const deliveryCost = calcShippingCost(delivery?.speed);
+    const tax = calcTax(subtotal, totalDiscount, customer?.location);
+    const paymentFee = calcPaymentFee(subtotal, totalDiscount, payment?.type);
+
+    let total = subtotal - totalDiscount + deliveryCost + tax + paymentFee;
+    if (total < 0) total = 0;
+
+    return Math.round(total * 100) / 100;
+  }
+
+  /**
+   * Valida o pedido e retorna erros e status de validade.
+   */
+  static validateAndProcessOrder(order, user, payment) {
+    const errors = [];
+
+    // Pedido
+    if (!order || !Array.isArray(order.items) || order.items.length === 0)
+      errors.push("Pedido sem itens.");
+    else {
+      order.items.forEach((item) => {
+        if (!item.id) errors.push("ID do item não informado");
+        if (!item.price) errors.push(`Preço não informado para item ${item.id || "?"}`);
+        if (!item.quantity) errors.push(`Quantidade não informada para item ${item.id || "?"}`);
+        if (item.price <= 0) errors.push(`Preço inválido para item ${item.id}`);
+        if (item.quantity <= 0) errors.push(`Quantidade inválida para item ${item.id}`);
+      });
+    }
+
+    // Usuário
+    if (!user?.id) errors.push("ID do usuário não informado");
+    if (!user?.email) errors.push("Email do usuário não informado");
+    if (!user?.address) errors.push("Endereço do usuário não informado");
+
+    // Pagamento
+    if (!payment?.method) errors.push("Método de pagamento não informado");
+    if (!payment?.amount || payment.amount <= 0)
+      errors.push("Valor do pagamento inválido");
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+}
+
+module.exports = { OrderProcessor };

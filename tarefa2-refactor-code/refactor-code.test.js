@@ -1,32 +1,65 @@
-describe('Sistema de E-commerce - Refatoração', () => {
-  // Implementar testes para processOrder
-  test('deve calcular total correto para pedido simples', () => {
-    // Testar: pedido com 2 itens, usuário VIP, pagamento cartão, frete padrão
-    // Dados de entrada: orderData, userInfo, paymentInfo, shippingInfo, promoInfo
-    // Resultado esperado: total calculado corretamente
+const { OrderProcessor } = require("./refactor-code");
+
+describe("Sistema de E-commerce - Refatoração", () => {
+  test("deve calcular total correto para pedido simples", () => {
+  const orderData = { items: [{ price: 50, quantity: 2 }, { price: 30, quantity: 1 }] };
+  const userInfo = { type: "VIP", state: "NY" };
+  const paymentInfo = { method: "CREDIT_CARD" };
+  const shippingInfo = { type: "STANDARD" };
+  const promoInfo = {};
+
+  const total = OrderProcessor.processOrder(orderData, userInfo, paymentInfo, shippingInfo, promoInfo);
+  expect(total).toBeCloseTo(137.54, 2);
+});
+
+
+  test("deve calcular total com produtos e descontos", () => {
+    const order = { products: [{ cost: 100, count: 1 }, { cost: 50, count: 2 }] };
+    const customer = { level: "PREMIUM", location: "USA" };
+    const payment = { type: "CARD" };
+    const delivery = { speed: "FAST" };
+    const coupon = { discount: 0.2 };
+
+    const total = OrderProcessor.calculateOrderTotal(order, customer, payment, delivery, coupon);
+    expect(total).toBeGreaterThan(0);
+    expect(total).toBeLessThan(200);
   });
 
-  // Implementar testes para calculateOrderTotal
-  test('deve calcular total com produtos e descontos', () => {
-    // Testar: pedido com produtos, cliente PREMIUM, cupom SAVE20
-    // Verificar: soma de produtos, desconto 20%, cupom aplicado
+  test("deve validar pedido com dados corretos", () => {
+    const order = { items: [{ id: 1, price: 10, quantity: 2 }] };
+    const user = { id: 5, email: "teste@exemplo.com", address: "Rua A" };
+    const payment = { method: "CREDIT_CARD", amount: 100 };
+
+    const result = OrderProcessor.validateAndProcessOrder(order, user, payment);
+    expect(result.isValid).toBe(true);
+    expect(result.errors.length).toBe(0);
   });
 
-  // Implementar testes para validateAndProcessOrder
-  test('deve validar pedido com dados corretos', () => {
-    // Testar: pedido válido com todos os dados obrigatórios
-    // Resultado esperado: isValid = true, sem erros
+  test("deve processar pedido completo VIP com cupom", () => {
+    const orderData = { items: [{ price: 100, quantity: 2 }, { price: 50, quantity: 1 }, { price: 20, quantity: 3 }] };
+    const userInfo = { type: "VIP", state: "CA" };
+    const paymentInfo = { method: "CREDIT_CARD" };
+    const shippingInfo = { type: "EXPRESS" };
+    const promoInfo = { code: "SAVE20" };
+
+    const total = OrderProcessor.processOrder(orderData, userInfo, paymentInfo, shippingInfo, promoInfo);
+    expect(total).toBeGreaterThan(0);
+    expect(total).toBeLessThan(400);
   });
 
-  // Teste de integração
-  test('deve processar pedido completo VIP com cupom', () => {
-    // Cenário: usuário VIP, pedido com 3 itens, cupom SAVE20, frete express, pagamento cartão
-    // Verificar: todos os cálculos aplicados corretamente
-  });
+  test("deve lidar com pedido inválido", () => {
+    const order = { items: [] };
+    const user = { id: null, email: "", address: "" };
+    const payment = { method: "", amount: -10 };
 
-  // Teste de edge case
-  test('deve lidar com pedido inválido', () => {
-    // Testar: pedido sem itens, usuário sem dados, pagamento inválido
-    // Resultado esperado: erros específicos para cada problema
+    const result = OrderProcessor.validateAndProcessOrder(order, user, payment);
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("Pedido sem itens"),
+        expect.stringContaining("ID do usuário"),
+        expect.stringContaining("Email do usuário"),
+      ])
+    );
   });
 });
