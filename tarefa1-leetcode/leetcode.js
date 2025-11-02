@@ -28,6 +28,9 @@
  * Output: true
  */
 
+console.log("Início Tarefa 1 - ['SEM IA']");
+
+
 function isValid(s) {
   // Implementar aqui
   return false;
