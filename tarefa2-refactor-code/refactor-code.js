@@ -1,3 +1,4 @@
+console.log("Início Tarefa 2 - ['SEM IA']");
 class LegacyOrderProcessor {
   processOrder(orderData, userInfo, paymentInfo, shippingInfo, promoInfo) {
     var total = 0;
