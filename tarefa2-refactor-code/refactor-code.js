@@ -1,3 +1,4 @@
+console.log("Início Tarefa 3 - ['SEM IA']");
 /**
  * @file refactor-code.js
  * @description Refatoração da classe LegacyOrderProcessor com código limpo e modular.
